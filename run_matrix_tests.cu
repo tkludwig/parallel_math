@@ -52,6 +52,29 @@ void print_matrix(const double* mat, int M, int N)
 	}
 }
 
+void print_matrix_big(const double* mat, int M, int N, int include)
+{
+	std::cout << std::endl << "[" << std::endl;
+	for (int i = 0; i < include; ++i)
+	{
+		for (int j = 0; j < include; ++j)
+		{
+			std::cout << std::fixed << std::setprecision(3) << std::setw(8) << *(mat + j * M + i) << " ";
+		}
+		std::cout << "        ..." << std::endl;
+	}
+	std::cout << "                ...";
+	for (int i = (M-include); i < M; ++i)
+	{
+		std::cout << std::endl << "                ...    ";
+		for (int j = (N-include); j < N; ++j)
+		{
+			std::cout << std::fixed << std::setprecision(3) << std::setw(8) << *(mat + j * M + i) << " ";
+		}
+	}
+	std::cout << std::endl << "]" << std::endl;
+}
+
 int main()
 {
 	int M = 8;
@@ -59,6 +82,8 @@ int main()
 	double mat1[64];
 	int init_failed = random_uniform_initialize(mat1, M, N, 0.0, 10.5);
 	print_matrix(mat1, 8, 8);
+	print_matrix_big(mat1, 8, 8, 3);
+
 
 
 	std::cout << "test sequential naive multiply:" << std::endl;
