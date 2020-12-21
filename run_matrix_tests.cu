@@ -9,11 +9,13 @@
 #include <chrono>
 #include <random>
 #include <iomanip>
+#include <armadillo>
 
 #include "matrix_operations.cuh"
 
 int main()
 {
+	std::cout << "Armadillo version: " << arma::arma_version::as_string() << std::endl;
 	const int M = 79;
 	const int N = 79;
 	double mat1[M*N];
