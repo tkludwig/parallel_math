@@ -7,6 +7,7 @@
 #include <chrono>
 #include <random>
 #include <iomanip>
+#include <cmath>
 
 #include "matrix_operations.cuh"
 
@@ -26,6 +27,24 @@ int naive_multiply_sequential(double* A, double* B, double* C, int M, int K, int
 {
 	for (int i = 0; i < M * N; ++i)
 	{
+		double val = 0.;
+		int row = i % M;
+		int col = i / M;
+		for (int j = 0; j < K; ++j)
+		{
+			val += *(A + j * M + row) * *(B + col * K + j);
+		}
+		*(C + i) = val;
+	}
+	return 0;
+}
+
+int naive_multiply_omp(double* A, double* B, double* C, int M, int K, int N)
+{
+#pragma omp parallel for
+	for (int i = 0; i < M * N; ++i)
+	{
+		//printf("hello from thread %d", omp_get_thread_num());
 		double val = 0.;
 		int row = i % M;
 		int col = i / M;
@@ -72,4 +91,19 @@ void print_matrix_big(const double* mat, int M, int N, int include)
 		}
 	}
 	std::cout << std::endl << "]" << std::endl;
+}
+
+double max_diff(const double* mat1, const double* mat2, int M, int N)
+{
+	double maxd = 0.;
+	double tdiff = 0.;
+	for (int i = 0; i < M * N; ++i)
+	{
+		tdiff = std::abs(*(mat1 + i) - *(mat2 + i));
+		if (tdiff > maxd)
+		{
+			maxd = tdiff;
+		}
+	}
+	return maxd;
 }

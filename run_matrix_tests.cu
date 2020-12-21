@@ -14,12 +14,12 @@
 
 int main()
 {
-	int M = 8;
-	int N = 8;
-	double mat1[64];
-	int init_failed = random_uniform_initialize(mat1, M, N, 0.0, 10.5);
-	print_matrix(mat1, 8, 8);
-	print_matrix_big(mat1, 8, 8, 3);
+	const int M = 79;
+	const int N = 79;
+	double mat1[M*N];
+	double mat2[M*N];
+	double mat3[M*N];
+	int init_failed = random_uniform_initialize(mat1, M, N, 0.0, 0.5);
 
 	std::cout << "test sequential naive multiply:" << std::endl;
 	double A[4] = { 2., 0., 0., 3. };
@@ -27,4 +27,23 @@ int main()
 	double C[4];
 	naive_multiply_sequential(A, B, C, 2, 2, 2);
 	print_matrix(C, 2, 2);
+
+	std::cout << "test omp naive multiply:" << std::endl;
+	auto start = std::chrono::high_resolution_clock::now();
+	naive_multiply_omp(mat1, mat1, mat2, M, N, N);
+	auto end = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	std::cout << "naive_multiple_omp on size " << M << " took " << duration.count() << " ms" << std::endl;
+
+	start = std::chrono::high_resolution_clock::now();
+	naive_multiply_sequential(mat1, mat1, mat3, M, N, N);
+	end = std::chrono::high_resolution_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	std::cout << "naive_multiple_sequential on size " << M << " took " << duration.count() << " ms" << std::endl;
+
+	double diff = max_diff(mat2, mat3, M, N);
+	std::cout << "diff between sequential and omp matrices: " << diff << std::endl;
+
+	print_matrix_big(mat2, M, N, 3);
+	print_matrix_big(mat3, M, N, 3);
 }
