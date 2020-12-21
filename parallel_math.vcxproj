@@ -11,7 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="matrix_operations.cu" />
     <CudaCompile Include="run_matrix_tests.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="matrix_operations.cuh" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EE35BC2B-B567-4C98-A893-C9840384DEA8}</ProjectGuid>
