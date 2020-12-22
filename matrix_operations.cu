@@ -11,6 +11,35 @@
 
 #include "matrix_operations.cuh"
 
+#define BLOCKSIZE_1 16
+
+__global__ void kernel_naive_multiply_cuda(double* Ad, double* Bd, double* Cd, int M, int K, int N)
+{
+	double val = 0.;
+	int row = blockIdx.y * blockDim.y + threadIdx.y;
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if (row >= 0 && row < M && col >= 0 && col < N)
+	{
+		for (int k = 0; k < K; ++k)
+		{
+			val += *(Ad + (row)+k * M) * *(Bd + (col * K) + k);
+		}
+	}
+	*(Cd + row + col * M) = val;
+}
+
+int naive_multiply_cuda(double* __restrict__ A, double* __restrict__ B,
+	double* __restrict__ C, int M, int K, int N)
+{
+	dim3 threads(BLOCKSIZE_1, BLOCKSIZE_1); //threads per block
+	unsigned int blocks_x = (N + threads.x - 1) / threads.x; //basically ceil(N/threads.x)
+	unsigned int blocks_y = (M + threads.y - 1) / threads.y;
+	dim3 blocks(blocks_x, blocks_y);
+	kernel_naive_multiply_cuda<<<blocks, threads>>>(A, B, C, M, K, N);
+	return 0;
+}
+
 int random_uniform_initialize(double* m, int M, int N, double lower, double upper)
 {
 	std::default_random_engine generator;
