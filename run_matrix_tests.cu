@@ -15,9 +15,10 @@
 
 int main()
 {
-	std::cout << "Armadillo version: " << arma::arma_version::as_string() << std::endl;
-	const int M = 79;
-	const int N = 79;
+
+	std::cout << "Armadillo version??: " << arma::arma_version::as_string() << std::endl;
+	const int M = 9;
+	const int N = 9;
 	double mat1[M * N];
 	double mat2[M * N];
 	double mat3[M * N];
@@ -25,9 +26,14 @@ int main()
 	random_uniform_initialize(mat1, M, N, 0.0, 0.5);
 	random_uniform_initialize(mat2, M, N, 0.0, 0.5);
 
-	arma::Mat<double> a_mat1 = arma::mat(mat1, M, N, true);
-	arma::Mat<double> a_mat2 = arma::mat(mat2, M, N, true);
-	arma::Mat<double> a_mat3 = arma::mat(M, N);
+	arma::Mat<double> a_mat1(mat1, M, N, true);
+	arma::Mat<double> a_mat2(mat2, M, N, true);
+	arma::Mat<double> a_mat3(M, N);
+
+	std::cout << "mat1 initial:" << std::endl;
+	print_matrix_big(mat1, M, N, 3);
+	std::cout << "a_mat1 initial:" << std::endl;
+	print_matrix_big(a_mat1.memptr(), M, N, 3);
 
 	std::cout << "test omp naive multiply:" << std::endl;
 	auto start = std::chrono::high_resolution_clock::now();
@@ -42,7 +48,7 @@ int main()
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 	std::cout << "naive_multiple_sequential on size " << M << " took " << duration.count() << " ms" << std::endl;
 
-	//a_mat3 = a_mat1 * a_mat2; //the libraries required for this are not linking
+	a_mat3 = a_mat1 * a_mat2; //the libraries required for this are not linking
 
 	double diff = max_diff(mat3, mat4, M, N);
 	std::cout << "diff between sequential and omp matrices: " << diff << std::endl;
