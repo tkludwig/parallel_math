@@ -14,14 +14,14 @@
 
 int main()
 {
-	const int M = 99;
-	const int N = 99;
-	const int K = 99;
-	double mat1[M * K];
-	double mat2[K * N];
-	double mat3[M * N]; //array to store result from sequential multiply
-	double mat4[M * N]; //array to store result from omp multiply
-	double mat5[M * N]; //host array to store result from gpu multiply
+	const int M = 80;
+	const int N = 80;
+	const int K = 80;
+	double* mat1 = (double*)malloc(M * K * sizeof(double));
+	double* mat2 = (double*)malloc(K * N * sizeof(double));
+	double* mat3 = (double*)malloc(M * N * sizeof(double)); //array to store result from sequential multiply
+	double* mat4 = (double*)malloc(M * N * sizeof(double)); //array to store result from omp multiply
+	double* mat5 = (double*)malloc(M * N * sizeof(double)); //host array to store result from gpu multiply
 
 	double* d_mat1; //device pointer
 	double* d_mat2;
