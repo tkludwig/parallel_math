@@ -14,9 +14,9 @@
 
 int main()
 {
-	const int M = 528;
-	const int N = 528;
-	const int K = 528;
+	const int M = 529;
+	const int N = 529;
+	const int K = 529;
 	double* mat1 = (double*)malloc(M * K * sizeof(double));
 	double* mat2 = (double*)malloc(K * N * sizeof(double));
 	double* mat3 = (double*)malloc(M * N * sizeof(double)); //array to store result from sequential multiply
@@ -69,8 +69,14 @@ int main()
 	start = std::chrono::steady_clock::now();
 
 
-	cudaMemcpy(d_mat1, mat1, M * K * sizeof(double), cudaMemcpyHostToDevice);
-	cudaMemcpy(d_mat2, mat2, K * N * sizeof(double), cudaMemcpyHostToDevice);
+	if (cudaSuccess != cudaMemcpy(d_mat1, mat1, M * K * sizeof(double), cudaMemcpyHostToDevice))
+	{
+		std::cout << "cudaMemcpy failed" << std::endl;
+	}
+	if (cudaSuccess != cudaMemcpy(d_mat2, mat2, K * N * sizeof(double), cudaMemcpyHostToDevice))
+	{
+		std::cout << "cudaMemcpy failed" << std::endl;
+	}
 
 	start_kernel = std::chrono::steady_clock::now();
 	naive_multiply_cuda(d_mat1, d_mat2, d_mat3, M, K, N);
