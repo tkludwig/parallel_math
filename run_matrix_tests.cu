@@ -14,9 +14,9 @@
 
 int main()
 {
-	const int M = 80;
-	const int N = 80;
-	const int K = 80;
+	const int M = 528;
+	const int N = 528;
+	const int K = 528;
 	double* mat1 = (double*)malloc(M * K * sizeof(double));
 	double* mat2 = (double*)malloc(K * N * sizeof(double));
 	double* mat3 = (double*)malloc(M * N * sizeof(double)); //array to store result from sequential multiply
@@ -27,10 +27,20 @@ int main()
 	double* d_mat2;
 	double* d_mat3;
 
-	cudaMalloc(&d_mat1, M * N * sizeof(double));
-	cudaMalloc(&d_mat2, M * N * sizeof(double));
-	cudaMalloc(&d_mat3, M * N * sizeof(double));
-
+	if (cudaSuccess != cudaMalloc(&d_mat1, M * N * sizeof(double)))
+	{
+		std::cout << "cudaMalloc failed" << std::endl;
+	}
+	if (cudaSuccess != cudaMalloc(&d_mat2, M * N * sizeof(double)))
+	{
+		std::cout << "cudaMalloc failed" << std::endl;
+	}
+	if (cudaSuccess != cudaMalloc(&d_mat3, M * N * sizeof(double)))
+	{
+		std::cout << "cudaMalloc failed" << std::endl;
+	}
+	//todo: find a more elegant way to check these errors?
+	
 	random_uniform_initialize(mat1, M, N, 0.0, 0.5);
 	random_uniform_initialize(mat2, M, N, 0.0, 0.5);
 
